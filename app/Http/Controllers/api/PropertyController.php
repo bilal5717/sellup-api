@@ -9,11 +9,11 @@ use App\Models\PropertySaleDetail;
 use App\Models\PropertyRentDetails;
 class PropertyController extends Controller
 {
-  public function index()
+ public function index()
 {
     try {
-        $properties = Post::with(['propertySaleDetails', 'images', 'category', 'subCategory'])
-            ->whereHas('propertySaleDetails')
+        $properties = Post::with(['propertySaleDetail', 'images', 'category', 'subCategory'])
+            ->whereHas('propertySaleDetail')  // Corrected method name
             ->whereHas('category', function($query) {
                 $query->where('name', 'Property for Sale');
             })
@@ -35,12 +35,12 @@ class PropertyController extends Controller
                             'order' => $image->order,
                         ];
                     }),
-                    'property_sale_detail' => $post->propertySaleDetails ? [
-                        'bedrooms' => $post->propertySaleDetails->bedrooms,
-                        'bathrooms' => $post->propertySaleDetails->bathrooms,
-                        'area' => $post->propertySaleDetails->area,
-                        'area_unit' => $post->propertySaleDetails->area_unit,
-                        'features' => $post->propertySaleDetails->features,
+                    'property_sale_detail' => optional($post->propertySaleDetail)->exists() ? [
+                        'bedrooms' => optional($post->propertySaleDetail)->bedrooms,
+                        'bathrooms' => optional($post->propertySaleDetail)->bathrooms,
+                        'area' => optional($post->propertySaleDetail)->area,
+                        'area_unit' => optional($post->propertySaleDetail)->area_unit,
+                        'features' => optional($post->propertySaleDetail)->features,
                     ] : null
                 ];
             });
@@ -52,10 +52,12 @@ class PropertyController extends Controller
 }
 
 
-    public function showLandsDetails()
-    {
-        $lands = Post::with(['PropertySaleDetail', 'images', 'category', 'subCategory'])
-            ->whereHas('PropertySaleDetail')
+
+   public function showLandsDetails()
+{
+    try {
+        $lands = Post::with(['propertySaleDetail', 'images', 'category', 'subCategory'])
+            ->whereHas('propertySaleDetail')
             ->whereHas('category', function($query) {
                 $query->where('name', 'Property for Sale');
             })
@@ -70,19 +72,27 @@ class PropertyController extends Controller
                     'price' => $post->price,
                     'location' => $post->location,
                     'posted_at' => $post->created_at->diffForHumans(),
-                    'images' => $post->images->map(function($image) {
-                        return ['url' => asset('storage/' . $image->path)];
+                     'images' => $post->images->map(function ($image) {
+                        return [
+                            'url' => $image->path,
+                            'is_featured' => $image->is_featured,
+                            'order' => $image->order,
+                        ];
                     }),
                     'property_sale_detail' => [
-                        'area' => $post->propertySaleDetail->area,
-                        'area_unit' =>  $post->propertySaleDetail->area_unit,
-                        'land_type' =>  $post->propertySaleDetail->sub_type,
+                        'area' => optional($post->propertySaleDetail)->area,
+                        'area_unit' => optional($post->propertySaleDetail)->area_unit,
+                        'land_type' => optional($post->propertySaleDetail)->sub_type,
                     ]
                 ];
             });
 
         return response()->json($lands);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
+
 
    public function propertyRentAllDetails()
 {

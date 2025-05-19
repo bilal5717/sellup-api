@@ -16,6 +16,8 @@ use App\Http\Controllers\api\BusinessIndustrialController;
 use App\Http\Controllers\api\ServicesController;
 use App\Http\Controllers\api\AnimalsController;
 use App\Http\Controllers\Api\JobsController;
+use App\Http\Controllers\Api\KidsController;
+use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\BooksAndHobbiesController;
 use App\Http\Controllers\Api\FurnitureHomeController;
 Route::prefix('auth')->group(function () {
@@ -44,8 +46,10 @@ Route::post('/register-phone', [AuthController::class, 'registerUsingPhone']);
 Route::post('/posts', [PostController::class, 'store']);
 /* Mobiles Routes */
 Route::get('/mobiles', [MobileController::class, 'index']);
-Route::get('/mobile-products', [MobileController::class, 'showAllProducts']);
-Route::get('/mobiles/{id}', [MobileController::class, 'showMobileDetails']);
+Route::get('/tablets', [MobileController::class, 'getTabletProducts']);
+Route::get('/mobile-phones', [MobileController::class, 'getMobileProducts']);
+Route::get('/accessories', [MobileController::class, 'getAccessoryProducts']);
+/* Route::get('/mobiles/{id}', [MobileController::class, 'showMobileDetails']); */
 /* Bikes Routes */
 Route::get('/bikes', [BikeController::class, 'index']);
 Route::get('/bikes/{id}', [BikeController::class, 'show']);
@@ -72,6 +76,10 @@ Route::get('/animals', [AnimalsController::class, 'index']);
 Route::get('/books-sports-hobbies', [BooksAndHobbiesController::class, 'index']);
 /* Furniture and home decor */
 Route::get('/furniture-home-decor', [FurnitureHomeController::class, 'index']);
+/* Kids */
+Route::get('/kids', [KidsController::class, 'index']);
+/* Kids */
+Route::get('/vehicles', [VehicleController::class, 'index']);
 /* Image and video urls */
 Route::post('generate-image-url', [ImageController::class, 'generateUploadUrl']);
 Route::post('generate-video-url', [VideoController::class, 'generateVideoUploadUrl']);

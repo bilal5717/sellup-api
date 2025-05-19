@@ -23,19 +23,22 @@ class Post extends Model
 {
     return $this->hasOne(FashionBeautyDetail::class, 'post_id');
 }
+public function vehicleDetail()
+{
+    return $this->hasOne(vehicleDetails::class, 'post_id');
+}
 
 
-    public function propertySaleDetails()
+public function propertySaleDetail()
 {
     return $this->hasOne(PropertySaleDetail::class, 'post_id');
 }
-
     public function images() {
         return $this->hasMany(PostImage::class);
     }
     
     public function video() {
-        return $this->hasMany(PostVideo::class); // Changed to hasMany for multiple videos
+        return $this->hasMany(PostVideo::class); 
     }
     
     public function category() {
@@ -79,6 +82,10 @@ public function booksSportsDetail()
 public function furnitureDetail()
 {
     return $this->hasOne(FurnitureDetail::class, 'post_id');
+}
+public function kidsDetail()
+{
+    return $this->hasOne(KidsDetail::class, 'post_id');
 }
 
 }

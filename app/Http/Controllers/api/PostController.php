@@ -16,6 +16,7 @@ use App\Models\ServiceDetail;
 use App\Models\FurnitureDetail;
 use App\Models\FashionBeautyDetail;
 use App\Models\JobDetail;
+use App\Models\vehicleDetails;
 use App\Models\AnimalDetail;
 use App\Models\BusinessIndustrialDetail;
 use App\Models\SubCategory;
@@ -84,6 +85,27 @@ class PostController extends Controller
                         'headphone_type' => $validated['headphoneType'] ?? null,
                     ]);
                     break;
+                case 'vehicles':
+    $vehicleData = [
+        'post_id' => $post->id,
+        'vehicle_type' => $validated['vehicleType'] ?? null,
+        'make' => $validated['make'] ?? null,
+        'model' => $validated['model'] ?? null,
+        'year' => $validated['year'] ?? null,
+        'fuel_type' => $validated['fuelType'] ?? null,
+        'kms_driven' => $validated['kmsDriven'] ?? null,
+        'transmission' => $validated['transmission'] ?? null,
+        'assembly' => $validated['assembly'] ?? null,
+        'condition' => $validated['condition'] ?? null,
+        'registration_city' => $validated['registrationCity'] ?? null,
+        'doc_type' => $validated['docType'] ?? null,
+        'number_of_owners' => $validated['numberOfOwners'] ?? null,
+        'price' => $validated['price'] ?? null,
+        'location' => $validated['location'] ?? null,
+        'features' => isset($validated['features']) ? json_encode($validated['features']) : null,
+    ];
+    vehicleDetails::create($vehicleData);
+    break;
 
                 case 'property for sale':
                     PropertySaleDetail::create([
