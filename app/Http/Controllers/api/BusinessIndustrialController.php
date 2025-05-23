@@ -114,16 +114,42 @@ class BusinessIndustrialController extends Controller
         }
     }
 
-    public function index()
-{
-    try {
-        $businessProducts = Post::with(['businessIndustrialDetail', 'images', 'category', 'subCategory'])
-            ->whereHas('businessIndustrialDetail')
-            ->whereHas('category', function($query) {
-                $query->where('name', 'Business, Industrial & Agriculture');
-            })
-            ->get()
-            ->map(function ($post) {
+      public function index(Request $request, $subcategory = null)
+    {
+        try {
+            $query = Post::with(['businessIndustrialDetail', 'images', 'category', 'subCategory'])
+                ->whereHas('businessIndustrialDetail')
+                ->whereHas('category', function ($query) {
+                    $query->where('name', 'Business, Industrial & Agriculture');
+                });
+
+            // Filter by subcategory if provided
+            if ($subcategory) {
+                $subCategoryName = $this->slugToName($subcategory);
+                if ($subCategoryName) {
+                    $query->whereHas('subCategory', function ($query) use ($subCategoryName) {
+                        $query->where('name', $subCategoryName);
+                    });
+                } else {
+                    return response()->json(['error' => 'Invalid subcategory'], 404);
+                }
+            }
+
+            // Filter by type if provided
+            $type = $request->query('type');
+            if ($type && $subcategory) {
+                $subCategoryName = $this->slugToName($subcategory);
+                $typeName = $this->slugToName($type, true, $subCategoryName);
+                if ($typeName) {
+                    $query->whereHas('businessIndustrialDetail', function ($query) use ($typeName) {
+                        $query->where('sub_category_type', $typeName);
+                    });
+                } else {
+                    return response()->json(['error' => 'Invalid type'], 404);
+                }
+            }
+
+            $businessProducts = $query->get()->map(function ($post) {
                 return [
                     'id' => $post->id,
                     'title' => strip_tags($post->title),
@@ -150,10 +176,9 @@ class BusinessIndustrialController extends Controller
                 ];
             });
 
-        return response()->json($businessProducts);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json($businessProducts);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
-
 }

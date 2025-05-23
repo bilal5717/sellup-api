@@ -8,15 +8,30 @@ use App\Models\Post;
 
 class FashionAndBeautyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $fashionBeautyPosts = Post::with(['fashionBeautyDetail', 'images', 'category', 'subCategory'])
+            $query = Post::with(['fashionBeautyDetail', 'images', 'category', 'subCategory'])
                 ->whereHas('fashionBeautyDetail')
                 ->whereHas('category', function($query) {
                     $query->where('name', 'Fashion & Beauty');
-                })
-                ->get()
+                });
+
+            // Apply subcategory filter if provided
+            if ($request->has('subcategory')) {
+                $query->whereHas('subCategory', function($q) use ($request) {
+                    $q->where('slug', $request->subcategory);
+                });
+            }
+
+            // Apply type filter if provided
+            if ($request->has('type')) {
+                $query->whereHas('fashionBeautyDetail', function($q) use ($request) {
+                    $q->where('type', $request->type);
+                });
+            }
+
+            $fashionBeautyPosts = $query->get()
                 ->map(function ($post) {
                     return [
                         'id' => $post->id,
@@ -41,6 +56,10 @@ class FashionAndBeautyController extends Controller
                             'condition' => $post->fashionBeautyDetail->condition,
                             'age' => $post->fashionBeautyDetail->age,
                             'language' => $post->fashionBeautyDetail->language,
+                        ] : null,
+                        'sub_category' => $post->subCategory ? [
+                            'name' => $post->subCategory->name,
+                            'slug' => $post->subCategory->slug,
                         ] : null,
                     ];
                 });

@@ -48,6 +48,10 @@ public function propertySaleDetail()
     public function subCategory() {
         return $this->belongsTo(SubCategory::class);
     }
+    public function categoryType()
+{
+    return $this->belongsTo(CategoryType::class, 'category_type_id');
+}
     // Add to your Post model
 public function propertyRentDetails()
 {

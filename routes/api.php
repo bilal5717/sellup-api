@@ -47,8 +47,10 @@ Route::post('/posts', [PostController::class, 'store']);
 /* Mobiles Routes */
 Route::get('/mobiles', [MobileController::class, 'index']);
 Route::get('/tablets', [MobileController::class, 'getTabletProducts']);
+Route::get('/smart-watches', [MobileController::class, 'getWatchesProducts']);
 Route::get('/mobile-phones', [MobileController::class, 'getMobileProducts']);
 Route::get('/accessories', [MobileController::class, 'getAccessoryProducts']);
+Route::get('/accessory/{slug}', [MobileController::class, 'getAccessoriesByType']);
 /* Route::get('/mobiles/{id}', [MobileController::class, 'showMobileDetails']); */
 /* Bikes Routes */
 Route::get('/bikes', [BikeController::class, 'index']);
@@ -56,7 +58,7 @@ Route::get('/bikes/{id}', [BikeController::class, 'show']);
 /* Propert Routes */
 Route::get('/properties', [PropertyController::class, 'index']);
 Route::get('/properties-for-rent', [PropertyController::class, 'propertyRentAllDetails']);
-Route::get('/properties-for-sale', [PropertyController::class, 'propertySaleAllDetails']);
+Route::get('/properties-for-sale/{slug?}', [PropertyController::class, 'propertySaleAllDetails']);
 Route::get('/lands', [PropertyController::class, 'showLandsDetails']);
 /* Jobs Routes */
 Route::get('/jobs', [JobsController::class, 'index']);
@@ -67,7 +69,7 @@ Route::get('/fashion-products', [FashionAndBeautyController::class, 'index']);
 Route::get('/electronics', [ElectronicsHomeController::class, 'index']);
 /* Business and agriculture  */
 Route::post('/business-industrial', [BusinessIndustrialController::class, 'store']);
-Route::get('/business-industrial-agriculture', [BusinessIndustrialController::class, 'index']);
+Route::get('/business-industrial-agriculture/{subcategory?}', [BusinessIndustrialController::class, 'index']);
 /* services */
 Route::get('/services', [ServicesController::class, 'index']);
 /* Animals  */

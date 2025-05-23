@@ -41,8 +41,6 @@ class StorePostRequest extends FormRequest
             'price' => 'nullable|numeric|min:0|max:9999999',
             'location' => 'required|string|max:255',
             'contactName' => 'required|string|max:100',
-            'features' => 'nullable|array',
-            'features.*' => 'nullable|string|max:255',
         ];
     }
 
@@ -124,6 +122,7 @@ class StorePostRequest extends FormRequest
             'kmsDriven' => 'nullable|string|max:100',
             'ignitionType' => 'nullable|string|max:50',
             'origin' => 'nullable|string|max:50',
+            'kind'=>'nullable|string|max:50',
         ];
     }
 
